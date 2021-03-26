@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { App } from './App';
 
 const response = { speaker: 'test speaker', quote: 'test quote' };
@@ -25,13 +25,32 @@ test('renders a button and naruto image', () => {
   expect(imageEl).toBeInTheDocument();
 });
 
-test('calls api on button click and renders it response', async () => {
+test('calls api on startup and renders it response', async () => {
   render(<App />);
+
+  const quoteEl = await screen.findByText(/test quote/i);
+
+  expect(quoteEl).toBeInTheDocument();
+});
+
+test('calls api on button click and update its text', async () => {
+  const customResponse = {
+    speaker: 'custom test speaker',
+    quote: 'teste quote'
+  };
+
+  render(<App />);
+
+  server.use(
+    rest.get(process.env.REACT_APP_API, (req, res, ctx) => {
+      return res(ctx.json(customResponse));
+    })
+  );
 
   const buttonEl = screen.getByRole('button');
 
   fireEvent.click(buttonEl);
-  const quoteEl = await screen.findByText(/test quote/i);
+  const quoteEl = await screen.findByText(/custom test speaker/i);
 
   expect(quoteEl).toBeInTheDocument();
 });

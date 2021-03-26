@@ -1,27 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import narutoImg from '../../images/naruto.png';
 import jutsoSound from '../../sounds/jutso.mp3';
 import { Quotes } from '../../components';
 import { getQuote } from '../../services';
 
-const INITIAL_QUOTE = {
-  quote:
-    "I don't understand what's going on, but I'll just pretend that I do. *nods head in agreement*",
-  speaker: 'Naruto Uzumaki'
-};
-
 const audio = new Audio(jutsoSound);
 
 export function App() {
-  const [quote, setQuote] = useState(INITIAL_QUOTE);
+  const isMounted = useRef(true);
+  const [quote, setQuote] = useState({
+    speaker: 'Loading speaker...',
+    quote: 'Loading Quote'
+  });
 
   const onUpdate = async () => {
     const resQuote = await getQuote();
 
-    audio.play();
-    setQuote(resQuote);
+    if (isMounted.current) {
+      setQuote(resQuote);
+      audio.play();
+    }
   };
+
+  useEffect(() => {
+    onUpdate();
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   return (
     <Content>

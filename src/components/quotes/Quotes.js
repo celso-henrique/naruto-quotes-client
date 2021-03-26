@@ -13,8 +13,8 @@ export const Quotes = ({ quote, speaker, onUpdate = () => {} }) => {
 };
 
 Quotes.propTypes = {
-  quote: string.isRequired,
-  speaker: string.isRequired,
+  quote: string,
+  speaker: string,
   onUpdate: func
 };
 
