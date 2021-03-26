@@ -1,17 +1,21 @@
 import styled from 'styled-components';
+import { string, func } from 'prop-types';
 import { Button } from '../button';
 
-export const Quotes = () => {
+export const Quotes = ({ quote, speaker, onUpdate = () => {} }) => {
   return (
     <Wrapper>
-      <Quote>
-        "I don't understand what's going on, but I'll just pretend that I do.
-        *nods head in agreement*"
-      </Quote>
-      <Speaker>- Naruto Uzumaki</Speaker>
-      <Button>Quote No Jutsu</Button>
+      <Quote>"{quote}"</Quote>
+      <Speaker>- {speaker}</Speaker>
+      <Button onClick={onUpdate}>Quote No Jutsu</Button>
     </Wrapper>
   );
+};
+
+Quotes.propTypes = {
+  quote: string.isRequired,
+  speaker: string.isRequired,
+  onUpdate: func
 };
 
 const Wrapper = styled.div`
